@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academix Pro | School Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #c62828;
+            --accent: #d32f2f;
+            --light: #f5f5f5;
+            --dark: #121212;
+            --gray: #424242;
+            --light-gray: #e0e0e0;
+            --text: #212121;
+            --text-light: #757575;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--text);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 100%;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        /* Main Content Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 220px;
+            background: var(--primary);
+            color: white;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+        
+        .menu-items {
+            padding: 15px 0;
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(198, 40, 40, 0.1);
+            border-left: 3px solid var(--secondary);
+            color: white;
+        }
+        
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .page-header h2 {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 20px;
+        }
+        
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 6px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--light-gray);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .card.students .card-icon {
+            background-color: rgba(198, 40, 40, 0.1);
+            color: var(--secondary);
+        }
+        
+        .card.teachers .card-icon {
+            background-color: rgba(26, 26, 26, 0.1);
+            color: var(--primary);
+        }
+        
+        .card.classes .card-icon {
+            background-color: rgba(198, 40, 40, 0.08);
+            color: var(--secondary);
+        }
+        
+        .card.attendance .card-icon {
+            background-color: rgba(26, 26, 26, 0.08);
+            color: var(--primary);
+        }
+        
+        .card h3 {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .card .value {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .card .change {
+            font-size: 11px;
+            color: #388e3c;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            background: white;
+            border-radius: 6px;
+            padding: 18px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        
+        .section-header h3 {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(198, 40, 40, 0.05);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 600px;
+        }
+        
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        th {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+        
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .status.active {
+            background-color: rgba(56, 142, 60, 0.1);
+            color: #388e3c;
+        }
+        
+        .status.pending {
+            background-color: rgba(245, 124, 0, 0.1);
+            color: #f57c00;
+        }
+        
+        .status.inactive {
+            background-color: rgba(198, 40, 40, 0.1);
+            color: var(--secondary);
+        }
+        
+        /* Calendar Styles */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .calendar-header {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .calendar-day {
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .calendar-date {
+            height: 65px;
+            background-color: var(--light);
+            border-radius: 4px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        
+        .calendar-date:hover {
+            background-color: rgba(198, 40, 40, 0.05);
+        }
+        
+        .calendar-date.current {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .calendar-date .date-number {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .calendar-event {
+            font-size: 9px;
+            background-color: var(--primary);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 2px;
+            margin-top: 2px;
+        }
+        
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--secondary);
+            background: rgba(198, 40, 40, 0.02);
+        }
+        
+        .action-btn i {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        
+        .action-btn span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 70px;
+            }
+            
+            .menu-item span {
+                display: none;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 66px;
+                left: -250px;
+                height: calc(100vh - 66px);
+                width: 220px;
+                z-index: 90;
+                transition: left 0.3s;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .menu-item span {
+                display: inline;
+            }
+            
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 66px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 80;
+            }
+            
+            .overlay.active {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 12px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 15px;
+            }
+            
+            .content-section {
+                padding: 15px;
+            }
+            
+            .calendar-date {
+                height: 50px;
+                padding: 4px;
+                font-size: 11px;
+            }
+            
+            .calendar-event {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-university"></i>
+                <h1>Academix Pro</h1>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div>Admin User</div>
+                    <div style="font-size: 11px; color: #ccc;">Administrator</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Layout -->
+        <div class="main-container">
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="menu-items">
+                    <div class="menu-item active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Students</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Faculty</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-book-open"></i>
+                        <span>Courses</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Schedule</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Attendance</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Grades</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Finance</span>
+                    </div>
+                    <div class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Overlay for mobile -->
+            <div class="overlay" id="overlay"></div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="page-header">
+                    <h2>Institutional Dashboard</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <div class="card students">
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Enrolled Students</h3>
+                        <div class="value">1,284</div>
+                        <div class="change">+3.7% this term</div>
+                    </div>
+                    
+                    <div class="card teachers">
+                        <div class="card-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>Faculty Members</h3>
+                        <div class="value">86</div>
+                        <div class="change">+2 new hires</div>
+                    </div>
+                    
+                    <div class="card classes">
+                        <div class="card-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h3>Active Courses</h3>
+                        <div class="value">64</div>
+                        <div class="change">All courses active</div>
+                    </div>
+                    
+                    <div class="card attendance">
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <h3>Attendance Rate</h3>
+                        <div class="value">96.2%</div>
+                        <div class="change">+1.4% from last week</div>
+                    </div>
+                </div>
+                
+                <!-- Stats and Quick Actions -->
+                <div class="stats-container">
+                    <!-- Recent Students Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>Recent Student Registrations</h3>
+                            <button class="btn btn-primary">View All</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Name</th>
+                                        <th>Grade</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#STU-2847</td>
+                                        <td>Emma Johnson</td>
+                                        <td>Grade 5</td>
+                                        <td><span class="status active">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-outline">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#STU-2848</td>
+                                        <td>Noah Williams</td>
+                                        <td>Grade 7</td>
+                                        <td><span class="status active">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-outline">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#STU-2849</td>
+                                        <td>Olivia Brown</td>
+                                        <td>Grade 4</td>
+                                        <td><span class="status pending">Pending</span></td>
+                                        <td>
+                                            <button class="btn btn-outline">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#STU-2850</td>
+                                        <td>Liam Jones</td>
+                                        <td>Grade 6</td>
+                                        <td><span class="status active">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-outline">View</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="quick-actions">
+                            <div class="action-btn">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Add Student</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-file-import"></i>
+                                <span>Import Data</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Reports</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-bell"></i>
+                                <span>Notifications</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-print"></i>
+                                <span>Print Records</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-envelope"></i>
+                                <span>Send Messages</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-money-check"></i>
+                                <span>Fee Collection</span>
+                            </div>
+                            <div class="action-btn">
+                                <i class="fas fa-cogs"></i>
+                                <span>System Settings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Calendar Section -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Academic Calendar</h3>
+                        <button class="btn btn-primary">View Full Calendar</button>
+                    </div>
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <div class="calendar-day">Sun</div>
+                            <div class="calendar-day">Mon</div>
+                            <div class="calendar-day">Tue</div>
+                            <div class="calendar-day">Wed</div>
+                            <div class="calendar-day">Thu</div>
+                            <div class="calendar-day">Fri</div>
+                            <div class="calendar-day">Sat</div>
+                        </div>
+                        
+                        <!-- Calendar dates would go here -->
+                        <div class="calendar-date">
+                            <div class="date-number">25</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">26</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">27</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">28</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">29</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">30</div>
+                        </div>
+                        <div class="calendar-date current">
+                            <div class="date-number">1</div>
+                            <div class="calendar-event">Faculty Meeting</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">2</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">3</div>
+                            <div class="calendar-event">Science Fair</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">4</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">5</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">6</div>
+                            <div class="calendar-event">Sports Day</div>
+                        </div>
+                        <div class="calendar-date">
+                            <div class="date-number">7</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Academix Pro School Management System &copy; 2023. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Simple interactivity for menu items
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Close mobile menu after selection
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+        
+        // Add interactivity to action buttons
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Action triggered: ' + this.querySelector('span').textContent);
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
